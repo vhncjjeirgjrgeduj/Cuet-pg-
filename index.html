@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b1f"><link rel="manifest" href="manifest.json">
+<title>Samarth CUET PG Political Science</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b1f;--p:#0f1636;--p2:#161f4a;--c:#4de1ff;--v:#9b6bff;--t:#e8ecff;--m:#8d97c8;--ok:#3ddc97;--bad:#ff5c7a;--w:#ffc857}
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(1200px 600px at 80% -10%,#1a2260 0,transparent 60%),var(--bg);color:var(--t);font:500 17px/1.45 Rajdhani,system-ui,sans-serif;min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+h1,h2,h3{font-family:Orbitron,sans-serif;letter-spacing:.5px}
+h2{font-size:20px;margin:6px 0 12px;color:var(--c)}h3{font-size:15px;margin-bottom:6px}
+.wrap{max-width:900px;margin:auto;padding:14px 14px 90px}
+.card{background:linear-gradient(160deg,var(--p),var(--p2));border:1px solid #2a3680;border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 0 18px #4de1ff12}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+button,.btn{font:600 16px Rajdhani,sans-serif;background:transparent;color:var(--c);border:1px solid var(--c);padding:9px 14px;border-radius:10px;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,.btn:hover{background:#4de1ff22}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--w);outline-offset:2px}
+.pri{background:linear-gradient(90deg,var(--c),var(--v));color:#06102a;border:0}.red{color:var(--bad);border-color:var(--bad)}
+input,select,textarea{width:100%;background:#0a1030;color:var(--t);border:1px solid #2a3680;border-radius:10px;padding:10px;font:500 16px Rajdhani,sans-serif;margin:5px 0}
+nav{position:fixed;bottom:0;left:0;right:0;background:#0a1030ee;border-top:1px solid #2a3680;display:flex;overflow-x:auto;padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:4px;backdrop-filter:blur(8px);z-index:5}
+nav button{border:0;color:var(--m);flex:1;min-width:76px;font-size:14px;padding:8px 4px}nav button.on{color:var(--c);background:#4de1ff1a}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.muted{color:var(--m);font-size:15px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.opt{display:block;border:1px solid #2a3680;border-radius:10px;padding:10px;margin:7px 0;cursor:pointer}.opt.sel{border-color:var(--c);background:#4de1ff1f}.opt.ok{border-color:var(--ok);background:#3ddc9722}.opt.no{border-color:var(--bad);background:#ff5c7a22}
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px}
+.pal button{padding:6px 0;border-color:#2a3680;color:var(--m)}.pal .a{background:var(--ok);color:#04210f;border:0}.pal .r{background:var(--v);color:#fff;border:0}.pal .n{background:#ff5c7a33;color:var(--t)}.pal .cur{outline:2px solid var(--c)}
+.timer{font:800 22px Orbitron;color:var(--w)}
+#login{max-width:380px;margin:12vh auto;padding:20px}
+.tag{font-size:13px;padding:2px 8px;border-radius:20px;border:1px solid var(--v);color:var(--v)}
+@media(prefers-reduced-motion:no-preference){.card{transition:border-color .2s}.card:hover{border-color:var(--c)}}
+</style></head><body><div id="app"></div>
+<script>
+const $=s=>document.querySelector(s),app=$('#app');
+const L=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const S=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){alert('Storage full/blocked')}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hash=async(id,pw)=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('cpg|'+id.toLowerCase()+'|'+pw));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')};
+const D=id=>'https://drive.google.com/drive/folders/'+id;
+const F=id=>'https://drive.google.com/file/d/'+id+'/view';
+const DEF_UNITS=['Political Theory','Indian Political Thought','Western Political Thought','Comparative Politics','Indian Government & Politics','International Relations','Public Administration','Research Methodology'];
+const DEF_RES=[
+{g:'Study Material',n:'#Samarth 2027 Pro Max',u:D('1zDflZqzXK9zbtC2jRaCg7PR5kAKN09fr')},
+{g:'Study Material',n:'Practice Ebooks',u:D('1jfD_NWubmXL_gpcDYnKg3JfsLr424-Aq')},
+{g:'Study Material',n:'Ebooks PDF',u:D('1JLxGntmdQBT0pEEktzEAPms7BpFO8VPR')},
+{g:'Study Material',n:'Handwritten Ebooks',u:D('1qpXf6w0LkPrtaU8OBnuhBhRitbA2z153')},
+{g:'Syllabus',n:'Syllabus folder (NTA)',u:D('1ShNcSXtySRl_CMNx89tDHXKQ8geovNdc')},
+{g:'PYQ',y:'2026',n:'PYQ 2026 Political Science',u:F('1Io27qULAR6-d8EcSS2SfaWCd8OM-yhAd')},
+{g:'PYQ',y:'2025',n:'PYQ 2025 (solved)',u:F('1If-NWU0wI10FGIa6zZ9OZ6sf1pn653r2')},
+{g:'PYQ',y:'2025',n:'PYQ 2025 Eduseeker',u:F('1ZQ79h1uB4piWQri6DA3kFuoSlXkDK2f2')},
+{g:'PYQ',y:'2024',n:'PYQ 2024 Political Science',u:F('1HmS_POtPCBjQUKGZT6nGO3_TjG4Ubldi')},
+{g:'PYQ',y:'2021-24',n:'CUET PG 2021-24 PYQ',u:F('1nITpZdze8X9IxC4q1kBpWHRKSg4C5KlA')}];
+const DEF_MOCKS=[...Array(3)].map((_,i)=>({n:'Full Mock '+(i+1),u:'All',q:75,m:90})).concat(DEF_UNITS.slice(0,7).map((u,i)=>({n:'Unit Mock '+(i+4)+' - '+u,u,q:25,m:30})));
+const SAMPLE=[
+['Political Theory','Who wrote "A Theory of Justice"?','John Rawls','Robert Nozick','Isaiah Berlin','Michael Sandel','A','Rawls (1971) proposed justice as fairness.'],
+['Western Political Thought','"Leviathan" was written by:','Locke','Hobbes','Rousseau','Machiavelli','B','Hobbes, 1651.'],
+['Indian Political Thought','Who authored "Hind Swaraj"?','Nehru','Ambedkar','M. K. Gandhi','Tilak','C','Gandhi wrote it in 1909.'],
+['Indian Government & Politics','Which Article deals with the Right to Constitutional Remedies?','Article 21','Article 32','Article 19','Article 14','B','Article 32 - heart and soul of the Constitution (Ambedkar).'],
+['International Relations','Who wrote "Politics Among Nations"?','Kenneth Waltz','E. H. Carr','Hans Morgenthau','Alexander Wendt','C','Morgenthau, 1948 - classical realism.'],
+['Comparative Politics','Who gave the concept of "Polyarchy"?','Robert Dahl','Almond','Lijphart','Easton','A','Dahl, Polyarchy (1971).']
+].map((r,i)=>({id:'s'+i,u:r[0],q:r[1],o:r.slice(2,6),a:'ABCD'.indexOf(r[6]),e:r[7]}));
+let ST={user:L('cpg_sess',null),tab:'home',exam:null};
+const users=()=>L('cpg_users',[]),units=()=>L('cpg_units',DEF_UNITS),res=()=>L('cpg_res',DEF_RES),qs=()=>L('cpg_qs',SAMPLE),mocks=()=>L('cpg_mocks',DEF_MOCKS),results=()=>L('cpg_results',[]);
+async function init(){if(!users().length){S('cpg_users',[{id:'anurag_secure',h:await hash('anurag_secure','Anurag@Secure#2027'),role:'admin'}])}render()}
+function render(){if(!ST.user)return loginView();if(ST.exam)return examView();const nav=[['home','Home'],['study','Study'],['pyq','PYQ'],['practice','Practice'],['mock','Mocks'],['nta','NTA Info'],['hist','Results']];if(ST.user.role==='admin')nav.push(['admin','Admin']);
+app.innerHTML='<div class="wrap"><div class="top"><h1 style="font-size:17px">CUET PG &middot; Political Science</h1><span class="row"><span class="tag">'+esc(ST.user.id)+'</span><button onclick="logout()">Logout</button></span></div><div id="v"></div></div><nav>'+nav.map(n=>'<button class="'+(ST.tab===n[0]?'on':'')+'" onclick="go(\''+n[0]+'\')">'+n[1]+'</button>').join('')+'</nav>';V[ST.tab]()}
+const go=t=>{ST.tab=t;render();scrollTo(0,0)};
+function logout(){ST.user=null;localStorage.removeItem('cpg_sess');render()}
+function loginView(){app.innerHTML='<div class="card" id="login"><h1 style="font-size:22px;color:var(--c)">Samarth CUET PG</h1><p class="muted">Political Science &middot; Secure Access</p><br><label>User ID<input id="lu" autocomplete="username"></label><label>Password<input id="lp" type="password" autocomplete="current-password"></label><p id="le" style="color:var(--bad);min-height:22px"></p><button class="pri" style="width:100%" onclick="doLogin()">Login</button></div>';$('#lp').onkeydown=e=>{if(e.key==='Enter')doLogin()}}
+async function doLogin(){const id=$('#lu').value.trim(),pw=$('#lp').value;const h=await hash(id,pw);const u=users().find(x=>x.id.toLowerCase()===id.toLowerCase()&&x.h===h);if(!u){$('#le').textContent='User ID ya password galat hai.';return}ST.user={id:u.id,role:u.role};S('cpg_sess',ST.user);render()}
+const V={};
+V.home=()=>{const r=results(),me=r.filter(x=>x.u===ST.user.id);const avg=me.length?Math.round(me.reduce((a,b)=>a+b.pct,0)/me.length):0;$('#v').innerHTML='<h2>Dashboard</h2><div class="grid"><div class="card"><h3>Questions</h3><div class="timer">'+qs().length+'</div></div><div class="card"><h3>Tests diye</h3><div class="timer">'+me.length+'</div></div><div class="card"><h3>Average %</h3><div class="timer">'+avg+'</div></div></div><div class="card"><h3>Shuruaat kaise karein</h3><p class="muted">Study me material kholo, PYQ saal-wise solve karo, Practice me unit chuno, aur Mocks me real CBT jaisa test do.</p></div>'};
+V.study=()=>{const u=res().filter(x=>x.g==='Study Material'||x.g==='Syllabus');$('#v').innerHTML='<h2>Study Material</h2>'+u.map(x=>'<div class="card top"><div><h3>'+esc(x.n)+'</h3><span class="muted">'+esc(x.g)+' &middot; Google Drive</span></div><a class="btn" target="_blank" rel="noopener" href="'+esc(x.u)+'">Kholo</a></div>').join('')};
+V.pyq=()=>{const u=res().filter(x=>x.g==='PYQ'),ys=[...new Set(u.map(x=>x.y))].sort().reverse();$('#v').innerHTML='<h2>PYQ - Saal wise</h2>'+ys.map(y=>'<div class="card"><h3>'+esc(y)+'</h3>'+u.filter(x=>x.y===y).map(x=>'<div class="top" style="margin:8px 0"><span>'+esc(x.n)+'</span><a class="btn" target="_blank" rel="noopener" href="'+esc(x.u)+'">PDF</a></div>').join('')+'</div>').join('')};
+V.nta=()=>{$('#v').innerHTML='<h2>NTA - CUET (PG) jaankari</h2><div class="card"><p>CUET (PG) NTA dwara hone wala computer-based test (CBT) hai, jo central aur participating universities ke PG course me admission ke liye hota hai.</p><br><p class="muted">Pichle saalon ka pattern: Political Science paper me 75 sawal, 90 minute, sahi jawab par +4 aur galat par -1 marks. Har baar ka official notification zaroor dekho, kyunki pattern badal sakta hai.</p></div><div class="card"><h3>Official</h3><div class="row"><a class="btn" target="_blank" rel="noopener" href="https://exams.nta.nic.in/cuet-pg/">NTA CUET PG</a><a class="btn" target="_blank" rel="noopener" href="'+D('1ShNcSXtySRl_CMNx89tDHXKQ8geovNdc')+'">Syllabus (Drive)</a></div></div>'};
+V.practice=()=>{$('#v').innerHTML='<h2>Unit-wise Practice</h2>'+units().map(u=>{const n=qs().filter(q=>q.u===u).length;return'<div class="card top"><div><h3>'+esc(u)+'</h3><span class="muted">'+n+' sawal</span></div><button '+(n?'':'disabled')+' onclick="startPractice(\''+esc(u).replace(/'/g,"\\'")+'\')">Start</button></div>'}).join('')};
+let PR=null;
+function startPractice(u){const l=qs().filter(q=>q.u===u).sort(()=>Math.random()-.5);PR={l,i:0,s:0,done:false,u};practiceQ()}
+function practiceQ(){const p=PR,q=p.l[p.i];$('#v').innerHTML='<h2>'+esc(p.u)+' ('+(p.i+1)+'/'+p.l.length+')</h2><div class="card"><p>'+esc(q.q)+'</p>'+q.o.map((o,i)=>'<div class="opt" onclick="pAns('+i+')">'+'ABCD'[i]+'. '+esc(o)+'</div>').join('')+'<p id="ex" class="muted"></p></div><button onclick="go(\'practice\')">Band karo</button>'}
+function pAns(i){if(PR.done)return;PR.done=true;const q=PR.l[PR.i];document.querySelectorAll('.opt').forEach((e,k)=>{if(k===q.a)e.classList.add('ok');else if(k===i)e.classList.add('no')});if(i===q.a)PR.s++;$('#ex').textContent=q.e||'';$('#v').insertAdjacentHTML('beforeend',' <button class="pri" onclick="pNext()">'+(PR.i+1<PR.l.length?'Agla':'Result')+'</button>')}
+function pNext(){PR.done=false;PR.i++;if(PR.i>=PR.l.length){$('#v').innerHTML='<div class="card"><h2>Practice poora</h2><div class="timer">'+PR.s+' / '+PR.l.length+'</div></div><button onclick="go(\'practice\')">Wapas</button>'}else practiceQ()}
+V.mock=()=>{$('#v').innerHTML='<h2>CBT Mock Tests</h2>'+mocks().map((m,i)=>{const n=m.u==='All'?qs().length:qs().filter(q=>q.u===m.u).length;return'<div class="card"><h3>'+esc(m.n)+'</h3><span class="muted">'+Math.min(m.q,n)+' sawal &middot; '+m.m+' min &middot; +4 / -1</span><br><br><button class="pri" '+(n?'':'disabled')+' onclick="startExam('+i+')">Test shuru karo</button></div>'}).join('')};
+function startExam(i){const m=mocks()[i];let l=(m.u==='All'?qs():qs().filter(q=>q.u===m.u)).slice().sort(()=>Math.random()-.5).slice(0,m.q);ST.exam={m,i,l,a:{},rv:{},v:{0:1},c:0,end:Date.now()+m.m*60000};tick();render()}
+let TM=null;
+function tick(){clearInterval(TM);TM=setInterval(()=>{if(!ST.exam)return clearInterval(TM);const t=$('#tm');const s=Math.max(0,Math.round((ST.exam.end-Date.now())/1000));if(t)t.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');if(s<=0)submitExam(true)},500)}
+function examView(){const e=ST.exam,q=e.l[e.c];e.v[e.c]=1;app.innerHTML='<div class="wrap"><div class="top card"><b>'+esc(e.m.n)+'</b><span class="timer" id="tm">--:--</span></div><div class="card"><span class="muted">Q'+(e.c+1)+' / '+e.l.length+' &middot; '+esc(q.u)+'</span><p style="margin:8px 0">'+esc(q.q)+'</p>'+q.o.map((o,i)=>'<div class="opt '+(e.a[e.c]===i?'sel':'')+'" onclick="pick('+i+')">'+'ABCD'[i]+'. '+esc(o)+'</div>').join('')+'</div><div class="row"><button onclick="nav(-1)">Pichla</button><button class="pri" onclick="nav(1)">Save &amp; Next</button><button onclick="mark()">Review</button><button class="red" onclick="clr()">Clear</button></div><div class="card"><div class="pal">'+e.l.map((_,i)=>'<button class="'+(e.rv[i]?'r':e.a[i]!=null?'a':e.v[i]?'n':'')+(i===e.c?' cur':'')+'" onclick="jump('+i+')">'+(i+1)+'</button>').join('')+'</div><p class="muted">Hara: jawab diya &middot; Jamuni: review &middot; Laal: dekha par jawab nahi</p></div><button class="red" onclick="if(confirm(\'Test submit karna hai?\'))submitExam()">Submit test</button></div>'}
+const pick=i=>{ST.exam.a[ST.exam.c]=i;examView()},clr=()=>{delete ST.exam.a[ST.exam.c];examView()},mark=()=>{const e=ST.exam;e.rv[e.c]=!e.rv[e.c];nav(1)},jump=i=>{ST.exam.c=i;examView()},nav=d=>{const e=ST.exam;e.c=Math.min(e.l.length-1,Math.max(0,e.c+d));examView()};
+function submitExam(auto){const e=ST.exam;clearInterval(TM);let c=0,w=0,sk=0;e.l.forEach((q,i)=>{if(e.a[i]==null)sk++;else if(e.a[i]===q.a)c++;else w++});const sc=c*4-w,mx=e.l.length*4,pct=Math.max(0,Math.round(sc/mx*100));const r=results();r.push({u:ST.user.id,n:e.m.n,sc,mx,c,w,sk,pct,d:new Date().toLocaleString()});S('cpg_results',r);ST.exam=null;ST.tab='hist';render();$('#v').insertAdjacentHTML('afterbegin','<div class="card"><h2>'+(auto?'Time khatam - auto submit':'Test submit ho gaya')+'</h2><div class="timer">'+sc+' / '+mx+'</div><p class="muted">Sahi '+c+' &middot; Galat '+w+' &middot; Chhode '+sk+'</p></div>')}
+V.hist=()=>{const r=results().filter(x=>x.u===ST.user.id).reverse();$('#v').innerHTML='<h2>Mere Results</h2>'+(r.length?r.map(x=>'<div class="card top"><div><h3>'+esc(x.n)+'</h3><span class="muted">'+esc(x.d)+'</span></div><div class="timer">'+x.sc+'/'+x.mx+'</div></div>').join(''):'<div class="card muted">Abhi koi test nahi diya. Mocks me jaake pehla test do.</div>')};
+V.admin=()=>{const us=users();$('#v').innerHTML='<h2>Admin Control</h2><div class="card"><h3>Users</h3>'+us.map(u=>'<div class="top" style="margin:6px 0"><span>'+esc(u.id)+' <span class="tag">'+u.role+'</span></span>'+(u.id===ST.user.id?'':'<button class="red" onclick="delUser(\''+esc(u.id)+'\')">Hatao</button>')+'</div>').join('')+'<hr style="border-color:#2a3680;margin:10px 0"><input id="nu" placeholder="Naya User ID"><input id="np" placeholder="Password"><select id="nr"><option value="user">User</option><option value="admin">Admin</option></select><button class="pri" onclick="addUser()">User jodo</button></div><div class="card"><h3>Mera password badlo</h3><input id="cp" type="password" placeholder="Naya password (min 8)"><button onclick="chPw()">Badlo</button></div><div class="card"><h3>Resource jodo (Drive link)</h3><select id="rg"><option>Study Material</option><option>PYQ</option><option>Syllabus</option></select><input id="ry" placeholder="Saal (sirf PYQ ke liye)"><input id="rn" placeholder="Naam"><input id="ru" placeholder="https://drive.google.com/..."><button class="pri" onclick="addRes()">Jodo</button></div><div class="card"><h3>Questions import ('+qs().length+' abhi)</h3><p class="muted">Har line: Unit|Sawal|A|B|C|D|Sahi(A-D)|Explanation</p><textarea id="bq" rows="6"></textarea><div class="row"><button class="pri" onclick="bulk()">Import</button><button class="red" onclick="if(confirm(\'Saare questions hatao?\')){S(\'cpg_qs\',[]);V.admin()}">Sab hatao</button></div></div>'};
+async function addUser(){const id=$('#nu').value.trim(),p=$('#np').value;if(!id||p.length<6)return alert('ID aur 6+ akshar ka password do');if(users().some(u=>u.id.toLowerCase()===id.toLowerCase()))return alert('Ye ID pehle se hai');const l=users();l.push({id,h:await hash(id,p),role:$('#nr').value});S('cpg_users',l);V.admin()}
+function delUser(id){if(!confirm(id+' ko hatana hai?'))return;S('cpg_users',users().filter(u=>u.id!==id));V.admin()}
+async function chPw(){const p=$('#cp').value;if(p.length<8)return alert('Kam se kam 8 akshar');const l=users();const u=l.find(x=>x.id===ST.user.id);u.h=await hash(u.id,p);S('cpg_users',l);alert('Password badal gaya');V.admin()}
+function addRes(){const n=$('#rn').value.trim(),u=$('#ru').value.trim();if(!n||!/^https:\/\//.test(u))return alert('Naam aur https link do');const l=res();l.push({g:$('#rg').value,y:$('#ry').value.trim()||'Other',n,u});S('cpg_res',l);alert('Jud gaya')}
+function bulk(){const rows=$('#bq').value.split('\n').map(x=>x.split('|').map(s=>s.trim())).filter(r=>r.length>=7&&'ABCD'.includes(r[6].toUpperCase()));const l=qs();const un=units();rows.forEach((r,i)=>{if(!un.includes(r[0]))un.push(r[0]);l.push({id:'i'+Date.now()+i,u:r[0],q:r[1],o:r.slice(2,6),a:'ABCD'.indexOf(r[6].toUpperCase()),e:r[7]||''})});S('cpg_units',un);S('cpg_qs',l);alert(rows.length+' sawal jude');V.admin()}
+if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+init();
+</script></body></html>
